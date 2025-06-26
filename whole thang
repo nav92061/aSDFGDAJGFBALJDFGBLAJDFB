@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Sports Tycoon: Prospect Hunter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .game-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .game-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+        }
+
+        .tab-content {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .world-map {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .country-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .country-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .country-card h3 {
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .prospects-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .prospect-card {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .prospect-card:hover {
+            border-color: #4ecdc4;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .recruit-btn {
+            background: linear-gradient(45deg, #56ab2f, #a8e6cf);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            float: right;
+        }
+
+        .recruit-btn:hover {
+            background: linear-gradient(45deg, #a8e6cf, #56ab2f);
+        }
+
+        .athlete-roster {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .athlete-card {
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .skill-bar {
+            background: rgba(255,255,255,0.3);
+            height: 8px;
+            border-radius: 4px;
+            margin: 5px 0;
+            overflow: hidden;
+        }
+
+        .skill-fill {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .nutrition-panel {
+            background: linear-gradient(135deg, #ffeaa7, #fab1a0);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .nutrition-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .nutrition-item {
+            background: rgba(255,255,255,0.8);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nutrition-item:hover {
+            background: white;
+            transform: scale(1.05);
+        }
+
+        .facilities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .facility-card {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .upgrade-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .tournaments-list {
+            margin-top: 20px;
+        }
+
+        .tournament-card {
+            background: linear-gradient(135deg, #ffecd2, #fcb69f);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .compete-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            float: right;
+        }
+
+        .log-panel {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 10px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+
+        @media (max-width: 768px) {
+            .game-container {
+                padding: 10px;
+            }
+            
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .game-tabs {
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            .tab-btn {
+                flex-shrink: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1>🏆 Global Sports Tycoon: Prospect Hunter</h1>
+            <div class="stats-bar">
+                <div class="stat-item">💰 Money: $<span id="money">50000</span></div>
+                <div class="stat-item">⭐ Reputation: <span id="reputation">10</span></div>
+                <div class="stat-item">👥 Athletes: <span id="athleteCount">0</span></div>
+                <div class="stat-item">🍉 Watermelons: <span id="watermelons">20</span></div>
+                <div class="stat-item">⚡ Powders: <span id="powders">5</span></div>
+            </div>
+        </div>
+
+        <div class="game-tabs">
+            <button class="tab-btn active" onclick="showTab('scouting')">🌍 World Scouting</button>
+            <button class="tab-btn" onclick="showTab('roster')">👥 My Athletes</button>
+            <button class="tab-btn" onclick="showTab('nutrition')">🍉 Nutrition</button>
+            <button class="tab-btn" onclick="showTab('facilities')">🏢 Facilities</button>
+            <button class="tab-btn" onclick="showTab('tournaments')">🏅 Tournaments</button>
+        </div>
+
+        <!-- Scouting Tab -->
+        <div id="scouting" class="tab-content active">
+            <h2>🚢 Scout the World for Talent</h2>
+            <p>Send your scout ship to different countries to find promising young athletes!</p>
+            
+            <div class="world-map">
+                <div class="country-card" onclick="scoutCountry('dominican')">
+                    <h3>🇩🇴 Dominican Republic</h3>
+                    <p>⚾ Baseball Prospects</p>
+                    <p>Cost: $5,000 per trip</p>
+                    <p>Specialty: Power hitters</p>
+                </div>
+                
+                <div class="country-card" onclick="scoutCountry('brazil')">
+                    <h3>🇧🇷 Brazil</h3>
+                    <p>⚽ Soccer Prospects</p>
+                    <p>Cost: $7,000 per trip</p>
+                    <p>Specialty: Technical skills</p>
+                </div>
+                
+                <div class="country-card" onclick="scoutCountry('china')">
+                    <h3>🇨🇳 China</h3>
+                    <p>🏓 Ping Pong Prospects</p>
+                    <p>Cost: $4,000 per trip</p>
+                    <p>Specialty: Lightning reflexes</p>
+                </div>
+                
+                <div class="country-card" onclick="scoutCountry('india')">
+                    <h3>🇮🇳 India</h3>
+                    <p>🏏 Cricket Prospects</p>
+                    <p>Cost: $6,000 per trip</p>
+                    <p>Specialty: Strategic thinking</p>
+                </div>
+                
+                <div class="country-card" onclick="scoutCountry('southsudan')">
+                    <h3>🇸🇸 South Sudan</h3>
+                    <p>🌟 Orphan Athletes (Any Sport)</p>
+                    <p>Cost: $3,000 per trip</p>
+                    <p>High Risk/High Reward!</p>
+                </div>
+            </div>
+
+            <div id="prospectsList" class="prospects-list"></div>
+        </div>
+
+        <!-- Roster Tab -->
+        <div id="roster" class="tab-content">
+            <h2>👥 Your Athletes</h2>
+            <p>Manage and train your recruited athletes</p>
+            
+            <div class="athlete-roster" id="athleteRoster">
+                <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">
+                    No athletes recruited yet. Visit the World Scouting tab to find talent!
+                </div>
+            </div>
+        </div>
+
+        <!-- Nutrition Tab -->
+        <div id="nutrition" class="tab-content">
+            <h2>🍉 Nutrition Management</h2>
+            
+            <div class="nutrition-panel">
+                <h3>Feed Your Athletes</h3>
+                <p>Combine watermelons with special powders to boost performance!</p>
+                
+                <div class="nutrition-items">
+                    <div class="nutrition-item" onclick="feedAthletes('watermelon')">
+                        <h4>🍉 Watermelon</h4>
+                        <p>Basic nutrition</p>
+                        <p>Cost: Free (you have <span id="watermelonCount">20</span>)</p>
+                    </div>
+                    
+                    <div class="nutrition-item" onclick="feedAthletes('protein')">
+                        <h4>💪 Protein Powder</h4>
+                        <p>+Strength boost</p>
+                        <p>Cost: 1 powder + $100</p>
+                    </div>
+                    
+                    <div class="nutrition-item" onclick="feedAthletes('focus')">
+                        <h4>🧠 Focus Powder</h4>
+                        <p>+Intelligence boost</p>
+                        <p>Cost: 1 powder + $100</p>
+                    </div>
+                    
+                    <div class="nutrition-item" onclick="feedAthletes('speed')">
+                        <h4>⚡ Speed Powder</h4>
+                        <p>+Speed boost</p>
+                        <p>Cost: 1 powder + $100</p>
+                    </div>
+                </div>
+                
+                <button class="upgrade-btn" onclick="buySupplies()">🛒 Buy More Supplies</button>
+            </div>
+        </div>
+
+        <!-- Facilities Tab -->
+        <div id="facilities" class="tab-content">
+            <h2>🏢 Training Facilities</h2>
+            
+            <div class="facilities-grid" id="facilitiesGrid">
+                <div class="facility-card">
+                    <h3>🏟️ Arizona Academy</h3>
+                    <p>Level: <span id="arizonaLevel">1</span></p>
+                    <p>Sports: Baseball, Cricket, Ping Pong</p>
+                    <p>Capacity: <span id="arizonaCapacity">10</span> athletes</p>
+                    <button class="upgrade-btn" onclick="upgradeFacility('arizona')">
+                        Upgrade ($<span id="arizonaCost">20000</span>)
+                    </button>
+                </div>
+                
+                <div class="facility-card">
+                    <h3>⚽ Europe Training Center</h3>
+                    <p>Level: <span id="europeLevel">1</span></p>
+                    <p>Sports: Soccer</p>
+                    <p>Capacity: <span id="europeCapacity">8</span> athletes</p>
+                    <button class="upgrade-btn" onclick="upgradeFacility('europe')">
+                        Upgrade ($<span id="europeCost">25000</span>)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tournaments Tab -->
+        <div id="tournaments" class="tab-content">
+            <h2>🏅 Tournaments & Competitions</h2>
+            
+            <div class="tournaments-list" id="tournamentsList">
+                <div class="tournament-card">
+                    <h3>🥉 Local Youth League</h3>
+                    <p>Entry Fee: $1,000 | Prize: $5,000 | Reputation: +5</p>
+                    <p>Requirement: Any sport, skill level 30+</p>
+                    <button class="compete-btn" onclick="enterTournament('local')">Enter Tournament</button>
+                </div>
+                
+                <div class="tournament-card">
+                    <h3>🥈 Regional Championship</h3>
+                    <p>Entry Fee: $5,000 | Prize: $20,000 | Reputation: +15</p>
+                    <p>Requirement: Any sport, skill level 60+</p>
+                    <button class="compete-btn" onclick="enterTournament('regional')">Enter Tournament</button>
+                </div>
+                
+                <div class="tournament-card">
+                    <h3>🥇 International Masters</h3>
+                    <p>Entry Fee: $15,000 | Prize: $100,000 | Reputation: +50</p>
+                    <p>Requirement: Any sport, skill level 90+</p>
+                    <button class="compete-btn" onclick="enterTournament('international')">Enter Tournament</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Log -->
+        <div class="log-panel" id="gameLog">
+            <div>🎮 Welcome to Global Sports Tycoon: Prospect Hunter!</div>
+            <div>💡 Start by scouting different countries for talent...</div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="scoutModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="scoutModalTitle">Scouting Results</h2>
+            <div id="scoutModalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        let gameState = {
+            money: 50000,
+            reputation: 10,
+            watermelons: 20,
+            powders: 5,
+            athletes: [],
+            facilities: {
+                arizona: { level: 1, capacity: 10 },
+                europe: { level: 1, capacity: 8 }
+            },
+            day: 1
+        };
+
+        // Prospect templates
+        const prospectTemplates = {
+            dominican: {
+                sport: 'Baseball',
+                names: ['Carlos', 'Miguel', 'José', 'Rafael', 'Diego'],
+                specialties: ['Power Hitting', 'Pitching', 'Fielding', 'Base Running'],
+                flag: '🇩🇴'
+            },
+            brazil: {
+                sport: 'Soccer',
+                names: ['Ronaldo', 'Pelé', 'Cafu', 'Zico', 'Kaká'],
+                specialties: ['Dribbling', 'Shooting', 'Passing', 'Defending'],
+                flag: '🇧🇷'
+            },
+            china: {
+                sport: 'Ping Pong',
+                names: ['Wei', 'Li', 'Zhang', 'Wang', 'Chen'],
+                specialties: ['Forehand', 'Backhand', 'Serve', 'Defense'],
+                flag: '🇨🇳'
+            },
+            india: {
+                sport: 'Cricket',
+                names: ['Raj', 'Arjun', 'Vikram', 'Rohit', 'Virat'],
+                specialties: ['Batting', 'Bowling', 'Fielding', 'Wicket Keeping'],
+                flag: '🇮🇳'
+            },
+            southsudan: {
+                sport: 'Multi-Sport',
+                names: ['Akech', 'Deng', 'Garang', 'Nyong', 'Bol'],
+                specialties: ['Raw Talent', 'Determination', 'Athleticism', 'Heart'],
+                flag: '🇸🇸'
+            }
+        };
+
+        // Initialize game
+        function initGame() {
+            updateUI();
+            logMessage('🎮 Game initialized! Start scouting for talent!');
+        }
+
+        // Tab management
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Scouting system
+        function scoutCountry(country) {
+            const costs = {
+                dominican: 5000,
+                brazil: 7000,
+                china: 4000,
+                india: 6000,
+                southsudan: 3000
+            };
+
+            if (gameState.money < costs[country]) {
+                logMessage(`❌ Not enough money to scout ${country}! Need $${costs[country]}`);
+                return;
+            }
+
+            gameState.money -= costs[country];
+            
+            // Generate prospects
+            const prospects = generateProspects(country);
+            showScoutingResults(country, prospects);
+            
+            logMessage(`🚢 Scouting ${country}... Found ${prospects.length} prospects!`);
+            updateUI();
+        }
+
+        function generateProspects(country) {
+            const template = prospectTemplates[country];
+            const numProspects = Math.floor(Math.random() * 4) + 2; // 2-5 prospects
+            const prospects = [];
+
+            for (let i = 0; i < numProspects; i++) {
+                const prospect = {
+                    id: Date.now() + i,
+                    name: template.names[Math.floor(Math.random() * template.names.length)],
+                    country: country,
+                    sport: template.sport,
+                    specialty: template.specialties[Math.floor(Math.random() * template.specialties.length)],
+                    age: Math.floor(Math.random() * 6) + 14, // 14-19 years old
+                    skills: {
+                        strength: Math.floor(Math.random() * 40) + 20,
+                        speed: Math.floor(Math.random() * 40) + 20,
+                        intelligence: Math.floor(Math.random() * 40) + 20,
+                        technique: Math.floor(Math.random() * 40) + 20
+                    },
+                    potential: Math.floor(Math.random() * 30) + 70, // 70-99 potential
+                    cost: Math.floor(Math.random() * 8000) + 2000, // $2000-10000
+                    happiness: 100,
+                    health: 100,
+                    flag: template.flag
+                };
+
+                // South Sudan orphans have high potential but lower initial skills
+                if (country === 'southsudan') {
+                    prospect.potential = Math.floor(Math.random() * 20) + 80; // 80-99 potential
+                    Object.keys(prospect.skills).forEach(skill => {
+                        prospect.skills[skill] = Math.floor(Math.random() * 30) + 10; // Lower starting skills
+                    });
+                    prospect.cost = Math.floor(Math.random() * 3000) + 1000; // Cheaper
+                    prospect.backstory = "Orphan with incredible potential";
+                }
+
+                prospects.push(prospect);
+            }
+
+            return prospects;
+        }
+
+        function showScoutingResults(country, prospects) {
+            const modal = document.getElementById('scoutModal');
+            const title = document.getElementById('scoutModalTitle');
+            const content = document.getElementById('scoutModalContent');
+            
+            title.textContent = `Scouting Results: ${prospectTemplates[country].flag} ${country.toUpperCase()}`;
+            
+            let html = '<div class="prospects-list">';
+            prospects.forEach(prospect => {
+                html += `
+                    <div class="prospect-card">
+                        <h4>${prospect.flag} ${prospect.name} (Age: ${prospect.age})</h4>
+                        <p><strong>Sport:</strong> ${prospect.sport} | <strong>Specialty:</strong> ${prospect.specialty}</p>
+                        <p><strong>Potential:</strong> ${prospect.potential}/100</p>
+                        <div style="margin: 10px 0;">
+                            <small>Strength: ${prospect.skills.strength} | Speed: ${prospect.skills.speed} | 
+                            Intelligence: ${prospect.skills.intelligence} | Technique: ${prospect.skills.technique}</small>
+                        </div>
+                        ${prospect.backstory ? `<p><em>${prospect.backstory}</em></p>` : ''}
+                        <button class="recruit-btn" onclick="recruitProspect(${prospect.id}, ${prospect.cost})">
+                            Recruit ($${prospect.cost})
+                        </button>
+                        <div style="clear: both;"></div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            content.innerHTML = html;
+            modal.style.display = 'block';
+            
+            // Store prospects temporarily
+            window.currentProspects = prospects;
+        }
+
+        function recruitProspect(prospectId, cost) {
+            if (gameState.money < cost) {
+                logMessage(`❌ Not enough money to recruit this prospect! Need $${cost}`);
+                return;
+            }
+
+            // Check facility capacity
+            const totalCapacity = gameState.facilities.arizona.capacity + gameState.facilities.europe.capacity;
+            if (gameState.athletes.length >= totalCapacity) {
+                logMessage(`❌ No space in facilities! Upgrade your facilities first.`);
+                return;
+            }
+
+            const prospect = window.currentProspects.find(p => p.id === prospectId);
+            if (prospect) {
+                gameState.money -= cost;
+                gameState.athletes.push(prospect);
+                
+                logMessage(`✅ Recruited ${prospect.flag} ${prospect.name} for $${cost}!`);
+                updateUI();
+                
+                // Remove recruited prospect from modal
+                event.target.parentElement.style.display = 'none';
+            }
+        }
+
+        // Nutrition system
+        function feedAthletes(nutritionType) {
+            if (gameState.athletes.length === 0) {
+                logMessage(`❌ No athletes to feed!`);
+                return;
+            }
+
+            let cost = 0;
+            let powderCost = 0;
+            let effect = '';
+
+            switch (nutritionType) {
+                case 'watermelon':
+                    if (gameState.watermelons < gameState.athletes.length) {
+                        logMessage(`❌ Not enough watermelons! Need ${gameState.athletes.length}`);
+                        return;
+                    }
+                    gameState.watermelons -= gameState.athletes.length;
+                    effect = 'Basic nutrition - maintains health';
+                    break;
+                case 'protein':
+                    cost = 100 * gameState.athletes.length;
+                    powderCost = Math.ceil(gameState.athletes.length / 2);
+                    if (gameState.money < cost || gameState.powders < powderCost) {
+                        logMessage(`❌ Not enough resources! Need $${cost} and ${powderCost} powders`);
+                        return;
+                    }
+                    gameState.money -= cost;
+                    gameState.powders -= powderCost;
+                    // Boost strength
+                    gameState.athletes.forEach(athlete => {
+                        athlete.skills.strength = Math.min(100, athlete.skills.strength + Math.floor(Math.random() * 5) + 2);
+                    });
+                    effect = '+Strength boost for all athletes!';
+                    break;
+                case 'focus':
+                    cost = 100 * gameState.athletes.length;
+                    powderCost = Math.ceil(gameState.athletes.length / 2);
+                    if (gameState.money < cost || gameState.powders < powderCost) {
+                        logMessage(`❌ Not enough resources! Need $${cost} and ${powderCost} powders`);
+                        return;
+                    }
+                    gameState.money -= cost;
+                    gameState.powders -= powderCost;
+                    // Boost intelligence
+                    gameState.athletes.forEach(athlete => {
+                        athlete.skills.intelligence = Math.min(100, athlete.skills.intelligence + Math.floor(Math.random() * 5) + 2);
+                    });
+                    effect = '+Intelligence boost for all athletes!';
+                    break;
+                case 'speed':
+                    cost = 100 * gameState.athletes.length;
+                    powderCost = Math.ceil(gameState.athletes.length / 2);
+                    if (gameState.money < cost || gameState.powders < powderCost) {
+                        logMessage(`❌ Not enough resources! Need $${cost} and ${powderCost} powders`);
+                        return;
+                    }
+                    gameState.money -= cost;
+                    gameState.powders -= powderCost;
+                    // Boost speed
+                    gameState.athletes.forEach(athlete => {
+                        athlete.skills.speed = Math.min(100, athlete.skills.speed + Math.floor(Math.random() * 5) + 2);
+                    });
+                    effect = '+Speed boost for all athletes!';
+                    break;
+            }
+
+            // Apply health effects
+            gameState.athletes.forEach(athlete => {
+                athlete.health = Math.min(100, athlete.health + 5);
+                athlete.happiness = Math.min(100, athlete.happiness + 3);
+            });
+
+            logMessage(`🍉 Fed all athletes: ${effect}`);
+            updateUI();
+        }
+
+        function buySupplies() {
+            const watermelonCost = 100;
+            const powderCost = 500;
+            
+            if (gameState.money < watermelonCost + powderCost) {
+                logMessage(`❌ Not enough money! Need ${watermelonCost + powderCost} for supplies`);
+                return;
+            }
+
+            gameState.money -= (watermelonCost + powderCost);
+            gameState.watermelons += 10;
+            gameState.powders += 3;
+            
+            logMessage(`🛒 Bought supplies: +10 watermelons, +3 powders`);
+            updateUI();
+        }
+
+        // Facility management
+        function upgradeFacility(facility) {
+            const costs = {
+                arizona: gameState.facilities.arizona.level * 20000,
+                europe: gameState.facilities.europe.level * 25000
+            };
+
+            if (gameState.money < costs[facility]) {
+                logMessage(`❌ Not enough money to upgrade ${facility}! Need ${costs[facility]}`);
+                return;
+            }
+
+            gameState.money -= costs[facility];
+            gameState.facilities[facility].level++;
+            gameState.facilities[facility].capacity += 5;
+            
+            logMessage(`⬆️ Upgraded ${facility} facility to level ${gameState.facilities[facility].level}!`);
+            updateUI();
+        }
+
+        // Tournament system
+        function enterTournament(tournamentType) {
+            const tournaments = {
+                local: { fee: 1000, prize: 5000, reputation: 5, skillReq: 30 },
+                regional: { fee: 5000, prize: 20000, reputation: 15, skillReq: 60 },
+                international: { fee: 15000, prize: 100000, reputation: 50, skillReq: 90 }
+            };
+
+            const tournament = tournaments[tournamentType];
+            
+            if (gameState.money < tournament.fee) {
+                logMessage(`❌ Not enough money for entry fee! Need ${tournament.fee}`);
+                return;
+            }
+
+            // Find eligible athletes
+            const eligibleAthletes = gameState.athletes.filter(athlete => {
+                const avgSkill = (athlete.skills.strength + athlete.skills.speed + 
+                                athlete.skills.intelligence + athlete.skills.technique) / 4;
+                return avgSkill >= tournament.skillReq;
+            });
+
+            if (eligibleAthletes.length === 0) {
+                logMessage(`❌ No athletes meet the skill requirement of ${tournament.skillReq}!`);
+                return;
+            }
+
+            gameState.money -= tournament.fee;
+            
+            // Simulate tournament
+            const success = Math.random() < 0.6; // 60% success rate
+            
+            if (success) {
+                gameState.money += tournament.prize;
+                gameState.reputation += tournament.reputation;
+                logMessage(`🏆 Won ${tournamentType} tournament! +${tournament.prize}, +${tournament.reputation} reputation`);
+                
+                // Boost participating athlete skills
+                const participant = eligibleAthletes[Math.floor(Math.random() * eligibleAthletes.length)];
+                Object.keys(participant.skills).forEach(skill => {
+                    participant.skills[skill] = Math.min(100, participant.skills[skill] + Math.floor(Math.random() * 3) + 1);
+                });
+            } else {
+                logMessage(`💔 Lost ${tournamentType} tournament. Better luck next time!`);
+            }
+            
+            updateUI();
+        }
+
+        // UI Updates
+        function updateUI() {
+            document.getElementById('money').textContent = gameState.money.toLocaleString();
+            document.getElementById('reputation').textContent = gameState.reputation;
+            document.getElementById('athleteCount').textContent = gameState.athletes.length;
+            document.getElementById('watermelons').textContent = gameState.watermelons;
+            document.getElementById('powders').textContent = gameState.powders;
+            document.getElementById('watermelonCount').textContent = gameState.watermelons;
+            
+            // Update facility info
+            document.getElementById('arizonaLevel').textContent = gameState.facilities.arizona.level;
+            document.getElementById('arizonaCapacity').textContent = gameState.facilities.arizona.capacity;
+            document.getElementById('arizonaCost').textContent = (gameState.facilities.arizona.level * 20000).toLocaleString();
+            
+            document.getElementById('europeLevel').textContent = gameState.facilities.europe.level;
+            document.getElementById('europeCapacity').textContent = gameState.facilities.europe.capacity;
+            document.getElementById('europeCost').textContent = (gameState.facilities.europe.level * 25000).toLocaleString();
+            
+            updateAthleteRoster();
+        }
+
+        function updateAthleteRoster() {
+            const roster = document.getElementById('athleteRoster');
+            
+            if (gameState.athletes.length === 0) {
+                roster.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">
+                        No athletes recruited yet. Visit the World Scouting tab to find talent!
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            gameState.athletes.forEach(athlete => {
+                const avgSkill = Math.round((athlete.skills.strength + athlete.skills.speed + 
+                                          athlete.skills.intelligence + athlete.skills.technique) / 4);
+                
+                html += `
+                    <div class="athlete-card">
+                        <h4>${athlete.flag} ${athlete.name}</h4>
+                        <p><strong>${athlete.sport}</strong> | Age: ${athlete.age}</p>
+                        <p>Specialty: ${athlete.specialty}</p>
+                        <p>Overall: ${avgSkill}/100 | Potential: ${athlete.potential}/100</p>
+                        
+                        <div style="margin: 10px 0;">
+                            <small>💪 Strength: ${athlete.skills.strength}</small>
+                            <div class="skill-bar">
+                                <div class="skill-fill" style="width: ${athlete.skills.strength}%"></div>
+                            </div>
+                            
+                            <small>⚡ Speed: ${athlete.skills.speed}</small>
+                            <div class="skill-bar">
+                                <div class="skill-fill" style="width: ${athlete.skills.speed}%"></div>
+                            </div>
+                            
+                            <small>🧠 Intelligence: ${athlete.skills.intelligence}</small>
+                            <div class="skill-bar">
+                                <div class="skill-fill" style="width: ${athlete.skills.intelligence}%"></div>
+                            </div>
+                            
+                            <small>🎯 Technique: ${athlete.skills.technique}</small>
+                            <div class="skill-bar">
+                                <div class="skill-fill" style="width: ${athlete.skills.technique}%"></div>
+                            </div>
+                        </div>
+                        
+                        <p style="font-size: 12px;">❤️ Health: ${athlete.health}% | 😊 Happiness: ${athlete.happiness}%</p>
+                        
+                        <button class="recruit-btn" onclick="trainAthlete(${athlete.id})" style="float: none; margin-top: 10px;">
+                            Train ($500)
+                        </button>
+                    </div>
+                `;
+            });
+            
+            roster.innerHTML = html;
+        }
+
+        function trainAthlete(athleteId) {
+            const cost = 500;
+            if (gameState.money < cost) {
+                logMessage(`❌ Not enough money to train athlete! Need ${cost}`);
+                return;
+            }
+
+            const athlete = gameState.athletes.find(a => a.id === athleteId);
+            if (!athlete) return;
+
+            gameState.money -= cost;
+            
+            // Random skill improvement
+            const skills = Object.keys(athlete.skills);
+            const randomSkill = skills[Math.floor(Math.random() * skills.length)];
+            const improvement = Math.floor(Math.random() * 3) + 1;
+            
+            athlete.skills[randomSkill] = Math.min(100, athlete.skills[randomSkill] + improvement);
+            
+            logMessage(`🏋️ Trained ${athlete.name}: +${improvement} ${randomSkill}`);
+            updateUI();
+        }
+
+        // Game simulation and events
+        function simulateDay() {
+            gameState.day++;
+            
+            // Random events
+            if (Math.random() < 0.1) { // 10% chance of random event
+                const events = [
+                    { type: 'injury', message: 'An athlete got injured during training!' },
+                    { type: 'talent', message: 'A talented scout joined your team!' },
+                    { type: 'sponsor', message: 'A sponsor offered you money!' },
+                    { type: 'media', message: 'Your academy was featured in sports media!' }
+                ];
+                
+                const event = events[Math.floor(Math.random() * events.length)];
+                handleRandomEvent(event);
+            }
+            
+            // Athletes naturally improve slightly over time
+            gameState.athletes.forEach(athlete => {
+                if (Math.random() < 0.3) { // 30% chance per day
+                    const skills = Object.keys(athlete.skills);
+                    const randomSkill = skills[Math.floor(Math.random() * skills.length)];
+                    athlete.skills[randomSkill] = Math.min(100, athlete.skills[randomSkill] + 1);
+                }
+                
+                // Happiness and health slowly decrease without care
+                athlete.happiness = Math.max(0, athlete.happiness - 1);
+                athlete.health = Math.max(0, athlete.health - 1);
+            });
+            
+            updateUI();
+        }
+
+        function handleRandomEvent(event) {
+            switch (event.type) {
+                case 'injury':
+                    if (gameState.athletes.length > 0) {
+                        const athlete = gameState.athletes[Math.floor(Math.random() * gameState.athletes.length)];
+                        athlete.health = Math.max(0, athlete.health - 20);
+                        logMessage(`🚑 ${athlete.name} got injured! Health decreased.`);
+                    }
+                    break;
+                case 'talent':
+                    gameState.reputation += 5;
+                    logMessage(`👨‍🏫 ${event.message} +5 reputation`);
+                    break;
+                case 'sponsor':
+                    const bonus = Math.floor(Math.random() * 10000) + 5000;
+                    gameState.money += bonus;
+                    logMessage(`💰 ${event.message} +${bonus}`);
+                    break;
+                case 'media':
+                    gameState.reputation += 10;
+                    logMessage(`📺 ${event.message} +10 reputation`);
+                    break;
+            }
+        }
+
+        // Logging system
+        function logMessage(message) {
+            const log = document.getElementById('gameLog');
+            const timestamp = `[Day ${gameState.day}] `;
+            log.innerHTML += `<div>${timestamp}${message}</div>`;
+            log.scrollTop = log.scrollHeight;
+        }
+
+        // Modal management
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('scoutModal');
+            const closeBtn = document.querySelector('.close');
+            
+            closeBtn.onclick = function() {
+                modal.style.display = 'none';
+            }
+            
+            window.onclick = function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            }
+            
+            // Start the game
+            initGame();
+            
+            // Auto-simulate days
+            setInterval(simulateDay, 10000); // Every 10 seconds = 1 game day
+        });
+
+        // Auto-save functionality
+        function saveGame() {
+            localStorage.setItem('sportsTycoonSave', JSON.stringify(gameState));
+        }
+
+        function loadGame() {
+            const saved = localStorage.getItem('sportsTycoonSave');
+            if (saved) {
+                gameState = JSON.parse(saved);
+                updateUI();
+                logMessage('💾 Game loaded successfully!');
+            }
+        }
+
+        // Save game every minute
+        setInterval(saveGame, 60000);
+    </script>
+</body>
+</html>
