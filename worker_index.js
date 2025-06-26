@@ -622,7 +622,8 @@ function getGameHTML() {
             };
 
             if (gameState.money < costs[country]) {
-                logMessage(`❌ Not enough money to scout ${country}! Need $${costs[country]}`);
+                logMessage("❌ Not enough money to scout " + country + "! Need $" + cost);
+
                 return;
             }
 
