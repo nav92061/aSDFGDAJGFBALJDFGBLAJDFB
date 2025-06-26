@@ -1,2 +1,10 @@
-name = "global-sports-tycoon"
-compatibility_date = "2025-06-26"
+name = "sports-tycoon-game"
+type = "javascript"
+main = "worker_index.js"
+compatibility_date = "2024-06-08"
+
+[build]
+command = ""
+
+[env.production]
+# Add production-specific settings here if needed 
